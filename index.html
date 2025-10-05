@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Talha Minecraft — Mekajikato</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<meta name="description" content="Mekajikato — Talha'nın Minecraft sunucusuna hoşgeldin! Sunucu adresi: mekajikato11.aternos.me" />
+<style>
+:root{
+  --bg1:#071019; --bg2:#0b1220; --accent:#6bd26b; --muted:#b8c1c9;
+  --card:#0f1720; --glass:rgba(255,255,255,0.03);
+  --accent2:#9ad36b;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(140,200,100,0.06), transparent),
+              radial-gradient(1000px 400px at 90% 90%, rgba(50,100,200,0.04), transparent),
+              linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:#e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+/* pixel-ish subtle grid */
+.bg-grid::before{
+  content:""; position:fixed; inset:0; pointer-events:none;
+  background-image: linear-gradient(0deg, rgba(255,255,255,0.01) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+  background-size:18px 18px; mix-blend-mode:overlay; opacity:0.6;
+}
+
+/* container */
+.container{max-width:1100px;margin:0 auto;padding:28px;position:relative;z-index:2}
+
+/* header */
+.header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo svg{width:54px;height:54px;display:block}
+.site-title{font-family:"Press Start 2P", monospace;font-size:14px;line-height:1;color:var(--accent)}
+
+/* nav */
+nav a{color:var(--muted);text-decoration:none;font-size:13px;margin-left:18px}
+nav a:hover{color:white}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:center;margin-bottom:28px}
+@media(max-width:940px){.hero{grid-template-columns:1fr;}.logo svg{width:46px;height:46px}}
+
+.hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+border:1px solid rgba(255,255,255,0.03);padding:22px;border-radius:14px;backdrop-filter: blur(6px)}
+h1{font-size:28px;margin:0 0 8px 0}
+.lead{color:var(--muted);margin:0 0 18px 0;font-size:14px}
+
+/* server box */
+.server-box{display:flex;align-items:center;gap:12px;padding:14px;border-radius:10px;background:linear-gradient(180deg,rgba(0,0,0,0.12),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03)}
+.server-ip{font-family:"Press Start 2P",monospace;font-size:13px;background:rgba(0,0,0,0.12);padding:8px 12px;border-radius:8px}
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+.btn-primary{background:linear-gradient(180deg,var(--accent),var(--accent2));color:#07210a;box-shadow:0 6px 18px rgba(13,89,20,0.18);}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+/* rotating block */
+.block-wrap{display:flex;justify-content:center;align-items:center}
+.block{
+  width:140px;height:140px; background:linear-gradient(#67c964,#4b8a2f);
+  border-radius:12px; box-shadow: 0 10px 30px rgba(7,16,25,0.7), inset 0 -10px 20px rgba(0,0,0,0.2);
+  transform-style:preserve-3d; animation:float 4s ease-in-out infinite;
+  display:flex;align-items:center;justify-content:center;
+}
+@keyframes float{0%{transform:translateY(0) rotateX(12deg) rotateY(18deg)}50%{transform:translateY(-10px) rotateX(6deg) rotateY(-12deg)}100%{transform:translateY(0) rotateX(12deg) rotateY(18deg)}}
+.block:before{content:'';position:absolute;width:120px;height:120px;border-radius:8px;background-image:linear-gradient(180deg,#87d86a,#4b8a2f);transform:translateZ(18px);filter:contrast(1.05)}
+
+/* features */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+@media(max-width:900px){.features-grid{grid-template-columns:repeat(1,1fr)}}
+.feature{padding:14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
+
+/* footer */
+.footer{margin-top:26px;color:var(--muted);font-size:13px;padding:18px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent)}
+
+/* toast */
+.toast{position:fixed;right:20px;bottom:20px;background:#09121a;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 24px rgba(2,8,12,0.6);opacity:0;transform:translateY(12px);transition:all .28s ease}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* small helpers */
+.kv{font-family:"Press Start 2P",monospace;font-size:11px;color:var(--accent);letter-spacing:0.5px}
+.copy-icon{margin-left:8px;font-weight:700}
+
+/* rules / modal */
+.modal{position:fixed;inset:0;background:rgba(1,3,7,0.7);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all .18s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-card{width:90%;max-width:720px;background:linear-gradient(180deg,#07131a, #071219);padding:22px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+
+/* small responsive */
+@media(max-width:520px){h1{font-size:20px}.hero{grid-template-columns:1fr} .block{width:110px;height:110px} .server-ip{font-size:11px}}
+
+</style>
+</head>
+<body class="bg-grid">
+<canvas id="particles" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+
+<div class="container">
+  <header class="header">
+    <div class="logo">
+      <!-- Inline SVG logo (grass block + text) -->
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- cube -->
+        <defs>
+          <linearGradient id="gTop" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#7fe06d"/>
+            <stop offset="1" stop-color="#57b74a"/>
+          </linearGradient>
+          <linearGradient id="gSide" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#6ba24a"/>
+            <stop offset="1" stop-color="#4b7a36"/>
+          </linearGradient>
+        </defs>
+        <g transform="translate(6,10)">
+          <rect x="0" y="0" width="60" height="40" rx="4" fill="url(#gTop)" stroke="#2f4f2b" stroke-width="2"/>
+          <rect x="0" y="34" width="60" height="22" rx="2" fill="#8b5a33" stroke="#5a3b29" stroke-width="2"/>
+          <rect x="0" y="0" width="60" height="40" rx="4" fill="none" stroke="#133317" stroke-width="1"/>
+          <!-- top pixels -->
+          <g fill="#6DD05E">
+            <rect x="6" y="6" width="6" height="6"/>
+            <rect x="18" y="6" width="6" height="6"/>
+            <rect x="30" y="6" width="6" height="6"/>
+            <rect x="42" y="6" width="6" height="6"/>
+          </g>
+        </g>
+        <text x="72" y="40" font-family="'Press Start 2P',monospace" font-size="9" fill="#9fe08a">Talha</text>
+        <text x="72" y="58" font-family="'Press Start 2P',monospace" font-size="6.5" fill="#bfe8ae">Minecraft</text>
+      </svg>
+
+      <div style="display:flex;flex-direction:column">
+        <div class="site-title">Talha Minecraft</div>
+        <div style="font-size:12px;color:var(--muted)">Mekajikato • Vanila & Fun</div>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#features">Özellikler</a>
+      <a href="#play">Oyna</a>
+      <a href="#rules" id="openRules">Kurallar</a>
+      <a href="#contact">İletişim</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Mekajikato — Sunucumuza Hoşgeldin!</h1>
+        <p class="lead">Hemen katılmak için sunucu adresini kopyala veya "Play Now" tuşuna bas.</p>
+
+        <div class="server-box" aria-live="polite">
+          <div style="flex:1">
+            <div class="kv">Sunucu Adresi</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+              <div class="server-ip" id="serverIp">mekajikato11.aternos.me</div>
+              <button class="btn btn-ghost" id="copyBtn" title="Sunucu adresini kopyala">Kopyala</button>
+            </div>
+            <div style="margin-top:10px;color:var(--muted);font-size:13px">Bu adresi Minecraft'ta yapıştırarak katılabilirsiniz.</div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+            <div class="kv" style="margin-bottom:6px">Durum (demo)</div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="statusDot" style="width:12px;height:12px;border-radius:50%;background:#2ecc71;display:inline-block;box-shadow:0 0 10px rgba(46,204,113,0.3)"></span>
+              <div style="text-align:right">
+                <div style="font-weight:700">Çevrimiçi</div>
+                <div style="font-size:12px;color:var(--muted)">12 oyuncu</div>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="playNow">Play Now</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;color:var(--muted);font-size:13px">Sunucuya gerçek zamanlı durum eklemek için <span style="color:#a7e77a">mcsrvstat/minecraft-api</span> gibi bir API entegrasyonu ekleyebilirsiniz.</div>
+      </div>
+
+      <aside class="block-wrap">
+        <div class="block" aria-hidden="true">
+          <!-- decorative block - rotating/pulsing -->
+        </div>
+      </aside>
+    </section>
+
+    <section id="features">
+      <h2 style="margin-top:0">Sunucu Özellikleri</h2>
+      <div class="features-grid">
+        <div class="feature">
+          <strong>Hemen Katıl</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Sunucu adresini kopyala ve Minecraft'a yapıştır — oynayın!</p>
+        </div>
+        <div class="feature">
+          <strong>Etkinlik & Duyurular</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Sayfaya etkinlik takvimi, yarışmalar ve özel gün ilanları eklenebilir.</p>
+        </div>
+        <div class="feature">
+          <strong>Topluluk Dostu</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Oyuncular için rehberler, kurallar ve iletişim kanalları (Discord) gösterilir.</p>
+        </div>
+        <div class="feature">
+          <strong>Minecraft Teması</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Minecraft havası veren görseller, blok animasyonları ve piksel estetiği.</p>
+        </div>
+        <div class="feature">
+          <strong>Kolay Paylaş</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Kopyala butonuyla adresi hızlı paylaş, davet et.</p>
+        </div>
+        <div class="feature">
+          <strong>Mobil Uyumlu</strong>
+          <p style="margin:8px 0;color:var(--muted);font-size:13px">Hem masaüstü hem mobilde hızlı deneyim.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="play" style="margin-top:18px">
+      <h2>Hemen Başla</h2>
+      <p style="color:var(--muted)">Aşağıdaki butonlar oyuncuları çekmek için tasarlandı — "Play Now" ile gerekli bilgileri gösteririz.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-primary" id="playNow2">Sunucuya Katıl</button>
+        <button class="btn btn-ghost" id="showHow">Nasıl Katılırım?</button>
+      </div>
+    </section>
+
+    <section id="rules" style="margin-top:18px">
+      <h2>Kurallar</h2>
+      <ul style="color:var(--muted)">
+        <li>Saygılı ol — hakaret yok.</li>
+        <li>Hile kullanımı yasaktır.</li>
+        <li>Sunucu kaynaklarını kötüye kullanmayın.</li>
+      </ul>
+      <div style="margin-top:12px;color:var(--muted);font-size:13px">Kuralları genişletmek veya açık bir Discord daveti eklemek isterseniz, dosyayı düzenleyin.</div>
+    </section>
+
+    <div class="footer" id="contact">
+      <strong>İletişim</strong>
+      <p style="margin:6px 0;color:var(--muted)">Sunucu sahibi: Talha — <a href="mailto:talha@example.com" style="color:#a7e77a;text-decoration:none">talha@example.com</a></p>
+      <p style="margin:4px 0;color:var(--muted);font-size:13px">Bu tek dosyalık siteyi doğrudan Netlify/Vercel/Dropbox/GitHub Pages ile yayınlayabilirsiniz.</p>
+    </div>
+  </main>
+</div>
+
+<!-- modal for instructions -->
+<div class="modal" id="modal" role="dialog" aria-hidden="true">
+  <div class="modal-card">
+    <h3>Sunucuya Nasıl Katılırım?</h3>
+    <p style="color:var(--muted)">1) Minecraft'i açın. 2) Multiplayer -> Direct Connect -> Yapıştırın: <span class="kv">mekajikato11.aternos.me</span></p>
+    <p style="color:var(--muted)">Gerçek zamanlı sunucu durumu eklemek için mcsrvstat.org veya Aternos API'lerini kullanabilirsiniz.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+      <button class="btn btn-ghost" id="closeModal">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Kopyalandı!</div>
+
+<script>
+// Copy to clipboard
+const serverIp = document.getElementById('serverIp').textContent.trim();
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(serverIp);
+    showToast('Sunucu adresi kopyalandı: ' + serverIp);
+  }catch(e){
+    showToast('Kopyalama desteklenmiyor. Manuel kopyalayın.');
+  }
+});
+
+function showToast(msg, timeout=2200){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), timeout);
+}
+
+// play now -> open modal with instructions
+document.getElementById('playNow').addEventListener('click', ()=> openModal());
+document.getElementById('playNow2').addEventListener('click', ()=> openModal());
+document.getElementById('showHow').addEventListener('click', ()=> openModal());
+document.getElementById('openRules').addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
+
+function openModal(){ document.getElementById('modal').classList.add('open'); document.getElementById('modal').setAttribute('aria-hidden','false'); }
+document.getElementById('closeModal').addEventListener('click', ()=>{ document.getElementById('modal').classList.remove('open'); document.getElementById('modal').setAttribute('aria-hidden','true'); })
+
+// Simple particle blocks animation (canvas)
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W = canvas.width = window.innerWidth;
+let H = canvas.height = window.innerHeight;
+const colors = ['#7fe06d','#5ab84a','#8b5a33','#b2b2b2'];
+
+window.addEventListener('resize', ()=>{W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight;});
+class Particle{
+  constructor(){ this.reset(); }
+  reset(){ this.x = Math.random()*W; this.y = -10 - Math.random()*200; this.vy = 0.6 + Math.random()*1.6; this.size = 6 + Math.random()*10; this.color = colors[(Math.random()*colors.length)|0]; }
+  step(){ this.y += this.vy; if(this.y - this.size > H) this.reset(); }
+  draw(){ ctx.fillStyle = this.color; ctx.fillRect(this.x, this.y, this.size, this.size); }
+}
+const particles = new Array(26).fill().map(()=> new Particle());
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  for(const p of particles){ p.step(); p.draw(); }
+  requestAnimationFrame(loop);
+}
+loop();
+
+// small floating rotation effect for the block element
+const block = document.querySelector('.block');
+// add inner "pixel" pattern
+block.innerHTML = '<svg viewBox="0 0 120 120" width="80%" height="80%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="10" y="10" width="100" height="68" rx="8" fill="#7fe06d"/><rect x="10" y="68" width="100" height="34" rx="6" fill="#8b5a33"/><g fill="#6DD05E"><rect x="20" y="22" width="8" height="8"/><rect x="36" y="22" width="8" height="8"/><rect x="52" y="22" width="8" height="8"/><rect x="68" y="22" width="8" height="8"/></g></svg>';
+
+// small accessibility: keyboard close modal with Esc
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ document.getElementById('modal').classList.remove('open'); } });
+
+// Helpful note: integrate with real server status APIs by replacing the demo area.
+// Example commented sample (for future devs):
+/* 
+fetch('https://api.mcsrvstat.us/2/mekajikato11.aternos.me').then(r=>r.json()).then(json=>{
+  // update statusDot, players, etc.
+});
+*/
+</script>
+</body>
+</html>
